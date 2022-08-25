@@ -1,53 +1,39 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
-class Solution {
-	public static boolean danjo(int num) {
-		String n = num + "";
-		for (int i = 0; i < n.length() - 1; i++) {
-			if(n.charAt(i) > n.charAt(i + 1)) return false;
+public class Solution {
+	public static boolean monotoneIncreasing(int n) {
+		String str = Integer.toString(n);
+		for(int i=1; i<str.length(); i++) {
+			if(str.charAt(i) < str.charAt(i-1)) {
+				return false;
+			}
 		}
-
 		return true;
 	}
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine()); 
-
-		for (int t = 1; t <= T; t++) {
-			int N = Integer.parseInt(br.readLine());
-			int max = -1;
-
-			if (N == 1) { // N이 하나면 그 수만 단조증가 수인지 체크
-				int num = Integer.parseInt(br.readLine()); // sc.nextInt();
-				if (danjo(num)) {
-					max = num;
-				}
-			} else {
-				// A1, A2, ,,, 입력 받음
-				int[] numbers = new int[N];
-				StringTokenizer stk = new StringTokenizer(br.readLine(), " ");
-				
-				for (int i = 0; i < N; i++) {
-					numbers[i] = Integer.parseInt(stk.nextToken()); 
-				}
-				
-				for(int i=N-1; i>=0; i--) {
-					for(int j=N-2; j>=0; j--) {
-						if(i != j) {
-							int n = numbers[i]*numbers[j];
-							if (danjo(n) && max<n) {
-								max = n;
-							}
-						}
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = sc.nextInt();
+		int N;
+		int[] nums;
+		for(int t=1; t<=T; t++) {
+			N = sc.nextInt();
+			nums = new int[N];
+			for(int i=0; i<N; i++) {
+				nums[i] = sc.nextInt();
+			}
+						
+			int max = monotoneIncreasing(nums[0]) ?  nums[0] : -1;
+			for(int i=0; i<N-1; i++) {
+				for(int j=i+1; j<N; j++) {
+					if (monotoneIncreasing(nums[i]*nums[j]) && max < nums[i]*nums[j]) {
+						max = nums[i]*nums[j];
 					}
 				}
 			}
-
+			
 			System.out.printf("#%d %d\n", t, max);
 		}
+		
 	}
 }
