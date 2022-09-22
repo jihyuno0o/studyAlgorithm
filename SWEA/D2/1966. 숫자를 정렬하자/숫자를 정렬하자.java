@@ -1,64 +1,66 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
-class Solution {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer stk;
+// 숫자를 정렬하자 - mergesort
+public class Solution {
+	static int[] num;
+	static int N;
+	static int[] sorted;
+	static StringBuilder sb = new StringBuilder();
 
-		int T = Integer.parseInt(br.readLine());
-
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = sc.nextInt();
 		for (int t = 1; t <= T; t++) {
-			int[] list = new int[Integer.parseInt(br.readLine())];
-			stk = new StringTokenizer(br.readLine(), " ");
-			int idx = 0;
-			while (stk.hasMoreTokens()) {
-				list[idx++] = Integer.parseInt(stk.nextToken());
-			}
+			N = sc.nextInt();
+			num = new int[N];
+			sorted = new int[N];
+			for (int i = 0; i < N; i++) {
+				num[i] = sc.nextInt();
+			} // 입력
 
-//			Arrays.sort(list);
-
-			// 버블 정렬
-//			for (int i = list.length-1 ; i>0; i--) {
-//				for (int j = 0; j < i; j++) { // i 이후는 정렬 완료
-//					if (list[j] > list[j + 1]) { // 이전 인덱스의 숫자가 다음 인덱스의 숫자보다 클 때
-//						int temp = list[j];
-//						list[j] = list[j + 1];
-//						list[j + 1] = temp; // 자리바꿔주기
-//					}
-//				}
-//			}
-
-			// 선택 정렬
-//			for (int i = 0; i < list.length - 1; i++) {
-//				int minIdx = i; // i 이전은 정렬 완료
-//				for (int j = i + 1; j < list.length; j++) {
-//					if (list[minIdx] > list[j]) {
-//						minIdx = j; // 제일 작은 값의 인덱스를 찾기
-//					}
-//				}
-//				int temp = list[i];
-//				list[i] = list[minIdx];
-//				list[minIdx] = temp; // 현재 i 인덱스와 제일 작은 값 자리 바꿔주기
-//			}
-			
-			// 삽입 정렬
-			for(int i=1; i<list.length; i++) {
-				int key = list[i]; // 자리를 찾아줄 숫자
-				int j; // key가 들어갈 수 있는 위치
-				for (j=i-1; j>=0 && key<list[j]; j--) {
-					// i 이전 에서 key보다 큰 값들은 한칸씩 뒤로 밀어준다 (자리 확보)
-					list[j+1] = list[j];
-				}
-				list[j+1] = key; // 마지막 루프가 돌면서 j-1 하고 나오므로 j+1 자리에 key를 넣어줌
+			mergeSort(0, N - 1);
+			sb.append("#").append(t).append(' ');
+			for (int n : num) {
+				sb.append(n).append(' ');
 			}
-			System.out.print("#" + t);
-			for (int n : list) {
-				System.out.print(" " + n);
-			}
-			System.out.println();
+			sb.append('\n');
 		}
+		System.out.println(sb);
+	}
+
+	public static void mergeSort(int left, int right) {
+		if (left < right) {
+			int mid = (left + right) / 2;
+			mergeSort(left, mid);
+			mergeSort(mid + 1, right);
+			merge(left, mid, right);
+		}
+	}
+
+	public static void merge(int left, int mid, int right) {
+		int L = left; // 왼쪽시작
+		int R = mid + 1; // 오른쪽시작
+		int idx = left; // 정렬된 숫자인덱스
+		while (L <= mid && R <= right) {
+			if (num[L] <= num[R]) {
+				sorted[idx++] = num[L++];
+			} else {
+				sorted[idx++] = num[R++];
+			}
+		}
+		// 남은거 처리
+		if (L <= mid) {
+			for (int i = L; i <= mid; i++) {
+				sorted[idx++] = num[i];
+			}
+		} else {
+			for (int i = R; i <= right; i++) {
+				sorted[idx++] = num[i];
+			}
+		}
+
+		for (int i = left; i <= right; i++) {
+			num[i] = sorted[i];
+		} // num에 다시 넣어줘서 반환해준다
 	}
 }
