@@ -1,10 +1,10 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
-// 숫자를 정렬하자 - mergesort
+// 숫자를 정렬하자 - quicksort : Hoare - Partition
 public class Solution {
 	static int[] num;
 	static int N;
-	static int[] sorted;
 	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) {
@@ -13,12 +13,11 @@ public class Solution {
 		for (int t = 1; t <= T; t++) {
 			N = sc.nextInt();
 			num = new int[N];
-			sorted = new int[N];
 			for (int i = 0; i < N; i++) {
 				num[i] = sc.nextInt();
 			} // 입력
 
-			mergeSort(0, N - 1);
+			quickSort(0, N - 1);
 			sb.append("#").append(t).append(' ');
 			for (int n : num) {
 				sb.append(n).append(' ');
@@ -28,39 +27,38 @@ public class Solution {
 		System.out.println(sb);
 	}
 
-	public static void mergeSort(int left, int right) {
+	public static void quickSort(int left, int right) {
 		if (left < right) {
-			int mid = (left + right) / 2;
-			mergeSort(left, mid);
-			mergeSort(mid + 1, right);
-			merge(left, mid, right);
+			int pivot = HoarePartition(left, right);
+			quickSort(left, pivot - 1); // 반으로쪼개기
+			quickSort(pivot + 1, right);
+			// merge가 필요없음
 		}
 	}
 
-	public static void merge(int left, int mid, int right) {
-		int L = left; // 왼쪽시작
-		int R = mid + 1; // 오른쪽시작
-		int idx = left; // 정렬된 숫자인덱스
-		while (L <= mid && R <= right) {
-			if (num[L] <= num[R]) {
-				sorted[idx++] = num[L++];
-			} else {
-				sorted[idx++] = num[R++];
+	public static int HoarePartition(int left, int right) {
+		int pivot = num[left]; // 제일왼쪽값 pivot
+		int L = left + 1; // 왼쪽 시작
+		int R = right; // 오른쪽 시작
+		while (L <= R) { // 교차되면 멈춤
+			while (L <= R && num[L] <= pivot) { // pivot 보다 작으면 그대로 둘거니까
+				L++;
+			}
+			while (num[R] > pivot) { // pivot 보다 크면 그대로 둘거니까
+				R--;
+			}
+			if (L < R) { // L : 피봇보다 큰값 , R :피봇보다 작은값
+				swap(L, R);
 			}
 		}
-		// 남은거 처리
-		if (L <= mid) {
-			for (int i = L; i <= mid; i++) {
-				sorted[idx++] = num[i];
-			}
-		} else {
-			for (int i = R; i <= right; i++) {
-				sorted[idx++] = num[i];
-			}
-		}
-
-		for (int i = left; i <= right; i++) {
-			num[i] = sorted[i];
-		} // num에 다시 넣어줘서 반환해준다
+		swap(left, R);
+		return R;
 	}
+
+	public static void swap(int i, int j) {
+		int temp = num[i];
+		num[i] = num[j];
+		num[j] = temp;
+	}
+
 }
