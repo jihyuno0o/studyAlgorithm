@@ -10,7 +10,7 @@ class Solution {
     	select : for(int i=1; i< 1<<attribute; i++) { // powerset 으로 부분집합 찾기
     		//최소성 확인
     		for(int j=0; j<key.size(); j++) {
-    			if((key.get(j)&i) >= key.get(j)) { // or 연산으로 이미 후보키인 것이 포함되어 있는지 확인
+    			if((key.get(j)&i) == key.get(j)) { // or 연산으로 이미 후보키인 것이 포함되어 있는지 확인
     				continue select;
     			}
     		}
@@ -29,6 +29,9 @@ class Solution {
     			}
     			check.add(temp); // 없으면 확인 리스트에 넣기
     		}
+            
+        
+            
     		answer++; // 다 돌고 여기까지 왔다면 후보키 가능
     		key.add(i); // 후보키 리스트에 넣기
     	}
